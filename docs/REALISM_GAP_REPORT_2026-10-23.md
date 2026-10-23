@@ -32,7 +32,7 @@
 - 최신 보드 구조 증거: [R74 보드 3/4 캡처](visual_overhaul/captures/r74-board-ratio/board/04_board_3q.png), [밑면 캡처](visual_overhaul/captures/r74-board-ratio/board/05_board_underside.png). 밑면 인쇄는 존재하지만, 윗면·옆면·트럭·바퀴의 품질이나 라이딩 화면의 완성도를 증명하지 않는다.
 - 최신 플레이 캡처: [R74 런타임 주행 프레임](visual_overhaul/captures/r74-board-ratio/01_runtime_ride.png) 및 사용자가 제공한 보드 프레임. 이전 캡처 자동화에는 이름과 게임 상태가 어긋난 이미지가 있어 화면 내 상태를 이미지 기준으로 판독해야 한다.
 - 최신 Editor Play Mode 캡처 프로브 QA: [R75 결과](visual_overhaul/captures/r75-landing-compression/iteration-3/capture.log) 34 PASS / 1 FAIL. Unity Test Runner 모음은 아니다. **무릎 굴곡은 +17°/+17°로 프로젝트 assertion의 20–35° 범위를 못 채웠다.** 골반 drop 0.108m, 발 고정 최대 오차 0.006m, 260ms 복귀 오차 0.012m, 60fps 20프레임 착지 클립은 각각 제한된 수치 게이트다.
-- 소스 대조에서 추가로 확인: wheel spin에 사용되는 `SceneBuilder` 반경은 0.039m지만 FBX 생성 휠 반경은 0.027m다. 따라서 로그의 47.93m `wheel arc`는 회전각에 설정 반경을 곱한 값이어서 설정상 이동과 일치할 뿐, 렌더 메시의 실제 롤률은 검증하지 못한다. 메시 반경으로 환산한 동일 회전의 표면 이동은 약 33.18m다. 상세 재분류는 [QA 보고서](VISUAL_OVERHAUL_QA.md)를 참조한다.
+- 소스 대조에서 추가로 확인: wheel spin에 사용되는 `SceneBuilder` 반경은 0.039m지만 FBX 생성 휠 반경은 0.027m다. 따라서 로그의 47.93m `wheel arc`는 회전각에 설정 반경을 곱한 값이어서 설정상 이동과 일치할 뿐, 렌더 메시의 실제 롤률은 검증하지 못한다. 메시 반경으로 환산한 동일 회전의 표면 이동은 약 33.18m다. 또한 PRD는 반경 0.035–0.055m를 요구해 소스 메시/런타임 값과 세 기준이 충돌한다. 치수를 먼저 확정해야 한다. 상세 재분류는 [QA 보고서](VISUAL_OVERHAUL_QA.md)를 참조한다.
 - 시각 에셋 정적 검사 [validation.log](visual_overhaul/captures/r75-landing-compression/iteration-3/validation.log)는 PASS다. 이 검사는 파일·머티리얼·계층 조건 일부를 검사하며 사람 눈의 품질 승인이 아니다.
 - 환경 검증은 R73 콘크리트 PBR의 디자인 리뷰 통과 기록이 있다. 그 판정은 해당 텍스처/UV와 gameplay-distance readability에 한정한다.
 - 보드 P1은 R72에서 실패 기록이 있고, R74는 텍스처의 sun 비율을 조정한 후보일 뿐 전체 보드 형상 게이트가 아니다. 이번 사용자 피드백 이후 보드 전체의 시각 게이트는 **FAIL / 재작업 필요**로 기록한다.
