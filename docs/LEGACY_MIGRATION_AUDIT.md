@@ -129,7 +129,7 @@ Judge는 입력된 LandingSample에서 팝 시점, 회전 완료, 착지 피치,
 
 Tuning의 54% 기준 및 99.5% 상한은 주석상 초기 성공 모델 가설이다. 테스트 실행 중 기준 사례는 54.01%, 숙련 사례는 99.59%로 출력됐다. 밸런싱 목표를 확정한 결과로 취급하지 않는다.
 
-반대로 현재 SkaterSeoulPrototype.BeginTrick은 이륙 순간 확률을 한 번 굴리고, 실패 사유를 정할 때 추가 난수를 최대 두 번 더 굴린다. 실제 회전/착지 관측 전에 성공을 결정한다. 이 구조는 새 PRD의 물리 우선·한 번 판정 원칙에 맞지 않으므로 이식 대상이 아니라 교체 대상이다.
+초기 감사 당시 SkaterSeoulPrototype.BeginTrick은 이륙 순간 확률을 한 번 굴리고, 실패 사유를 정할 때 추가 난수를 최대 두 번 더 굴렸다. 후속 이식에서 판정을 착지 시점으로 옮겼다. 입력 하한 및 방어 중 오답은 난수를 쓰지 않고 실패 처리하며, 나머지 착지는 난수 1개로 성공 여부와 실패 유형을 함께 정한다. 현재 3D MVP에는 회전·캐치에 대한 독립된 물리 샘플이 없으므로, 레거시 Judge 전체를 옮긴 것으로 간주하지 않는다.
 
 ### 성장, 커리어, 대전, 경제
 
@@ -152,7 +152,7 @@ Tuning의 54% 기준 및 99.5% 상한은 주석상 초기 성공 모델 가설�
 
 | 주제 | 레거시 관측 | 새 PRD/스타터 | 결정 |
 |---|---|---|---|
-| 트릭 범위와 ID | 39개, 고정 인덱스 | MVP는 Ollie, Kickflip, Tre Flip | 세 트릭만 노출하고 enum ID와 원래 순서는 보존한다. 배열 index cast는 금지한다 |
+| 트릭 범위와 ID | 39개, 고정 인덱스 | MVP는 Ollie, Kickflip, Tre Flip | MVP enum ID를 레거시와 같은 0/3/24로 두고, 현재 저장 슬롯 0/1/2는 명시적으로 매핑한다. 나머지 트릭은 아직 노출하지 않는다 |
 | 입력 범위 | 상태별 8방향/특수 입력, ↖까지; ← 기본 슬롯은 미지원 | PRD는 초기 세 기술만, 임시 위/좌상/우상 제스처 | 먼저 현 MVP 입력을 P0에서 고정하고 이후 3개를 정확히 연결한다. 8방향 확장은 별도 입력 검증 후다 |
 | 터치 영역 | 옛 Unity Input adapter | PRD 5.2는 화면 오른쪽 48% 이후라고 하고, 현재 소스/README는 왼쪽 원형 패드와 오른쪽 PUSH라고 한다 | 문서와 동작이 충돌한다. 현재 검증된 source pack의 왼쪽 패드 동작을 유지하고 PRD 문구를 정리하기 전 입력 위치를 이식하지 않는다 |
 | 화면 방향 | 레거시 README는 세로형 iPhone과 양 엄지 조작 | 새 PRD는 가로형 2.5D | 입력 규칙만 보존한다. 레거시 UI 위치, 레이아웃, 카메라 구도는 이식하지 않는다 |
@@ -172,4 +172,15 @@ Tuning의 54% 기준 및 99.5% 상한은 주석상 초기 성공 모델 가설�
 
 테스트는 39 ID와 입력 조합, SkateTouchSession의 방향·소유권·취소, deterministic Judge/확률, SkateSim/FlowSim 이동, 12 커리어·미션, SkateMatch/FriendSkateMatch 규칙을 포함한다. 다만 프로젝트가 Game/Progress.cs, Game/TouchInput.cs, FriendMatchTransport.cs, 새 Assets/SkaterSeoul 코드를 컴파일하지 않는다. Unity 6000.3.10f1 URP import, 새 씬, 물리, 실제 iOS 터치, 레거시 save migration도 이 실행으로 확인되지 않는다.
 
-이번 작업에서 새 C# 파일, 테스트, Unity 설정, 씬을 추가하거나 기존 소스/저장 데이터를 수정하지 않았다. 세부 이식 실행 순서는 docs/LEGACY_MIGRATION_PLAN.md에 기록했다.
+초기 감사에서는 C# 파일, Unity 설정, 씬을 수정하지 않았다. 사용자의 후속 이식 요청에 따라 현재 MVP C#의 세 트릭 ID와 착지 판정 일부를 반영했다. 새 저장소에 레거시 JSON을 가져오거나 레거시 프로젝트·저장값을 수정하지 않았다. 후속 반영 내용은 docs/LEGACY_MIGRATION_PLAN.md의 마지막 절에 기록했다.
+
+## Visual overhaul implementation update (2026-10-23)
+
+The later v2.0 task supplied a real Unity target and explicitly requested migration. The earlier no-import decision above was superseded. The external legacy game repository remains read-only; the existing SKATER SEOUL source-pack files were retained and compatibility edits were made in place.
+
+- Imported the pure legacy `Core` catalog, types, tuning, Judge, motion targets, success model, match, career and missions, plus `Game/Progress.cs`, into `UnityProject/Assets/SkaterSeoul/LegacyDomain/`.
+- Adapted `SkateMatch` only to accept an explicit three-trick local bot pool; the legacy default pool and 39 stable trick IDs remain intact.
+- The live 3D prototype uses legacy stable IDs (Ollie 0, Kickflip 3, Tre Flip 24), the v13 progress/save structure, Judge for mechanical landing eligibility, the legacy success model for its one probability draw, and `SkateMatch` for player-set to bot-match flow.
+- Current scene controls expose three tricks. Full 8-way input, remote/friend play, career/challenge UI, a full match end state, and the rest of the 39 tricks are not connected to the visual slice. Existing modules are retained as data/domain modules, not all claimed as playable features.
+- CoreTests from the source project were not rerun against the adapted Unity copies. Unity static rule checks and the scene Play Mode probe are reported separately in `docs/VISUAL_OVERHAUL_QA.md`.
+- Save risk: the iOS bundle identifier was kept as `com.osteoclasts.skaterkiugi` and the three old `SS_Mastery_*` keys are mapped into the v13 slots. A copied-PlayerPrefs validation harness restores local keys after the probe; migration of an actual installed user's device save remains **NOT RUN**.

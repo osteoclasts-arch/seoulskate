@@ -1,0 +1,29 @@
+PASS  four wheel probes see the plaza before a trick; gap=0.0094m
+PASS  runtime progress uses legacy v13 schema with all 39 stable trick slots
+PASS  board/04_board_3q material diagnostic was captured at 1280x720
+PASS  board/05_board_underside material diagnostic was captured at 1280x720
+PASS  10 second push and coast; distance=47.98m, release=6.52m/s, coast end=2.61m/s
+PASS  wheel arc matches Rigidbody delta at physics steps 11→516; wheelArc=47.92m, sameSampleBodyDelta=47.92m, liveBodyDelta=47.98m, mismatch=0.000m
+PASS  ground support gap <= 0.01m; probes=4, max gap=0.0080m
+PASS  OLLIE can begin from a settled support surface
+PASS  OLLIE resolves one attempt with one probability draw; attempts=0→1, draws=0→1
+PASS  OLLIE records once in legacy growth save; attempts=12→13
+PASS  OLLIE controlled valid landing
+PASS  OLLIE distinct bail: expected=LostBalance, actual=LostBalance, roll=0.9988, chance=0.9950
+PASS  OLLIE mechanical failure draw policy
+PASS  KICKFLIP can begin from a settled support surface
+PASS  KICKFLIP resolves one attempt with one probability draw; attempts=2→3, draws=2→3
+PASS  KICKFLIP records once in legacy growth save; attempts=8→9
+PASS  KICKFLIP controlled valid landing
+PASS  KICKFLIP distinct bail: expected=MissedCatch, actual=MissedCatch, roll=0.9760, chance=0.9680
+PASS  KICKFLIP mechanical failure draw policy
+PASS  TRE FLIP can begin from a settled support surface
+PASS  TRE FLIP resolves one attempt with one probability draw; attempts=4→5, draws=4→5
+PASS  TRE FLIP records once in legacy growth save; attempts=8→9
+PASS  TRE FLIP controlled valid landing
+PASS  TRE FLIP distinct bail: expected=UnderRotation, actual=UnderRotation, roll=0.0100, chance=0.8510
+PASS  TRE FLIP mechanical failure draw policy
+PASS  OLLIE clears the collider-backed ledge and lands beyond it; endX=5.90, failure=None
+PASS  legacy S.K.A.T.E. match starts on the player setter phase
+PASS  successful player set advances to the legacy bot match phase
+PASS  1280x720 CLI camera captures were written; ride frame=734684 bytes

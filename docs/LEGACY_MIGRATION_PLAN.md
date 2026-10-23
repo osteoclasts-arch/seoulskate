@@ -59,3 +59,21 @@ SkateSim.cs와 FlowSim.cs는 단계별로 통합하지 않는다. 필요하면 �
 - 실행: 레거시 CoreTests 385 passed, 0 failed.
 - 이식하지 않음: Core C# 파일, Unity 입력 adapter, Progress 저장, 커리어/미션, 레거시 씬과 그래픽. 현재 MVP와 결합 시 중복 시스템이 되고, 이 작업 공간에 실제 URP 프로젝트도 없으므로 이식 조건이 충족되지 않는다.
 - 수정하지 않음: 레거시 저장 데이터, 레거시 Unity 프로젝트의 소스/설정, 현재 source pack의 기존 C# 및 씬.
+
+## 후속 요청으로 반영한 최소 이식 (2026-10-23)
+
+- `SkateTrick` MVP 값은 레거시 고정 ID `Ollie=0`, `Kickflip=3`, `TreFlip=24`를 사용한다. 현재 `SS_Mastery_0..2` 저장 데이터는 `MasterySlot` 매핑을 통해 기존 슬롯 순서로 계속 읽고 쓴다.
+- 정상 착지 후보의 확률 판정은 접지 시점에 한 번 수행한다. 입력 품질 하한과 방어 중 잘못된 기술은 난수 없이 실패한다. 유효 시도에서 얻은 하나의 roll로 성공 여부와 실패 시 MissedCatch/LostBalance 표시를 결정한다.
+- 기존 Editor 규칙 점검에 stable ID·슬롯 round-trip·단일 roll 경계 검사를 추가한다.
+- 레거시 전체 TrickCatalog, 8방향·Charge/Preview 입력, `Progress` 저장 import, 스탯/커리어/미션, 15초/3글자 선택 규칙, 친구 대전은 현재 PRD의 3트릭·5글자 MVP 범위 및 데이터 안전 조건 때문에 보류한다. 특히 현재 3D 판정에는 레거시 Judge가 요구하는 완전한 착지 샘플이 없어 Judge 파일을 그대로 가져오지 않았다.
+- 레거시 프로젝트 소스, 설정 및 저장 데이터는 변경하지 않았다. Unity 입력 실기기 확인과 완전한 물리 판정은 아직 이식 범위 밖이다.
+- 검증: 수정된 파일을 disposable Unity 6000.3.10f1 프로젝트에 반영해 Editor static rule validation을 실행했고 PASS했다. 프로젝트에 URP가 없어 URP import, Play Mode, 실기기 입력 확인으로 확대 해석하지 않는다.
+
+## Visual overhaul implementation update (2026-10-23)
+
+The implementation target is now the independent `UnityProject/` Unity 6000.3.10f1 URP project. This supersedes the earlier “wait for a Unity project” gate; it does not modify the legacy source project.
+
+- Imported stable catalog/types, Judge, tuning, success model, motion target data, v13 Progress, Career, Missions and SkateMatch. The live slice routes physical landing candidates through legacy Judge and probability, records practice growth, and uses the legacy local match for player-set/bot-match state.
+- Unity scene and Play Mode evidence, completion boundaries and QA results are recorded in `docs/VISUAL_OVERHAUL_QA.md`.
+- The current input/UI and bot pool cover Ollie, Kickflip and Tre Flip. Full 39-trick play, 8-way input, Career/Missions UI, friend/online match, complete five-letter game, and end-to-end save migration from a real installed app are deferred/not verified. `SkateSim` and `FlowSim` remain excluded because their 2D simulation would compete with Unity Rigidbody ownership.
+- Do not delete legacy progress keys until a real old-save fixture/device migration has been verified. The local validation probe snapshots and restores the user's existing PlayerPrefs keys.

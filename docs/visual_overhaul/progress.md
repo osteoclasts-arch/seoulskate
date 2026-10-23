@@ -1,0 +1,37 @@
+Original prompt: Use the supplied Skate City-like images as visual references; get separate ChatGPT feedback on visual design and gameplay, research detailed Blender workflows, and iteratively improve the rider, board, Hangang environment, HUD, and coordinated push/Ollie/kickflip/tre-flip animation until the reviewers approve. Do not use desktop capture apps; use CLI-generated Unity captures.
+
+## Current iteration (2026-10-23)
+- The separate design and gameplay chats remain the review gates. Round 08 was FAIL in both chats. The design reviewer correctly identified that the Round 08 phase sheet was stale; it did not match the current runtime build. Round 09 therefore uses only individual frames from one r38 Unity CLI run.
+- Blender CLI generates a rig-preserving Quaternius clothing pass, a custom concave skateboard with print/grip/trucks/wheels, and a grouped Hangang FBX. Unity keeps the existing Humanoid Avatar and gameplay/board pivots.
+- r37 fixed the source skin-material remap, separated trouser legs in side profile, narrowed the foreground floor, moved a background rail away from the rider, enlarged the camera framing, and captured push prepare/contact/recovery at the correct push-cycle times.
+- r38 moved body-root pose application before `OnAnimatorIK`, lets both feet follow the free-flight targets through a trick, advances the front-foot flick, and increases the tre-flip scoop. The camera orthographic size is 2.45. The floor now exposes a narrow warm river-colored strip behind the ride lane.
+- r38 CLI PlayMode capture completed. Wheel contact, push/coast, trick resolution, battle transitions, and ledge clearance are PASS in `captures/playmode_results.txt`; these checks do not approve the visible animation or mobile touch feel.
+- Round 09 sent current r38 ride, push, Ollie, kickflip, and tre-flip frames to the two separate reviewers. Responses are pending.
+
+## Next
+- Apply Round 09 review priorities, with current open risks: hoodie/hood silhouette, articulated denim proportions, visible Hangang/bridge layers, planted push foot, and readable kickflip flick/catch.
+- If the reviewers request the tre-flip yaw gate, capture a supplemental three-quarter camera frame from the same CLI run.
+- Keep all subsequent review images build-consistent; do not send the old `kickflip_phase_sheet.png` until it is rebuilt from frames in the same capture run.
+
+## R54–R56 (2026-10-23)
+- R54 hid only the overlapping Blender far bridge, skyline, hills, and river renderers, leaving the Hangang panorama and Blender skate obstacles; removed the helmet-like cap. The HUD-off CLI frame is much cleaner and the photo backdrop visibly carries Seoul skyline, river, and bridge cues.
+- R54/R55 push captures confirm the fixed ground anchor and full contact at 0.240–0.260 s, but plant weight is already zero at 0.280 s. At that frame the requested anchor is 0.146–0.149 m from the solved rear foot and hip-to-target reach is 1.017–1.020 m against 0.871 m available. Recovery at 0.420 s returns to zero error. Do not treat the zero-weight drive target error as an IK solve failure; visible push still needs review.
+- The R53/R54 playmode suite still has one narrow failure: ten-second wheel travel mismatch 0.052 m against the 0.050 m threshold; trick outcomes, ground support, ledge clearance, and battle progression pass.
+- R55 found a real board topology bug: the Blender underside quad indices crossed themselves, producing the checkerboard grid. Corrected top and underside winding; the R55 flip frame now shows the intended Hangang sunset art.
+- R56 additionally crops the underside texture UV to the printed deck area, removing most of the external cream margin. The full R56 capture set is archived under `captures/r56/`.
+- R56 current ride/HUD-off/flick/catch images were sent to the existing Aside design review; the gameplay sequence and diagnostics were sent to the existing gameplay review. Both responses are still in progress.
+- Open high-impact work: improve the adult skater silhouette and true relaxed zip-hoodie/baggy-denim read; make push contact/drive/recovery look like a connected leg chain; visibly separate flicking feet from the deck and make Ollie pop stronger; make the board thickness/trucks/wheels read at ride distance; retain a distinctive Hangang midground without restoring the obstructing meshes. Phone touch remains untested.
+
+## R57–R58 (2026-10-23)
+- R57 was kept as an internal iteration: it exposed a Unity material remap that made the new Blender hair shell white and an overly extended balance-arm pose. R58 maps the Blender hair material, softens the arm IK, narrows the riding stance, and adds a shallow concrete slab while keeping the panorama and board artwork.
+- R58 screenshots and logs are archived under `captures/r58/`. The separate design and gameplay review chats received same-build CLI captures; their replies are pending.
+- The playmode suite now reports PASS across wheel travel, ground support, trick outcomes, battle progression, and ledge clearance. Wheel travel compares Rigidbody and wheel rotation at BoardRig's last integrated physics sample: 48.05m same-sample displacement versus 48.10m live body displacement, 0.000m wheel mismatch. The previous 0.052m was a sampling-time mismatch, not a wheel-rotation change.
+- Push is visibly held through the 0.280s drive sample: anchor remains fixed at x=1.03m and post-IK error is 0, with 0.04s of full contact after 0.240s contact. However, hip reach is 0.750/0.821m, leaving only 0.071m; the reviewer’s suggested ~0.23m reach reserve is not met. Toe-off at 0.300s has plant=0 and a 0.072m residual target-to-foot distance.
+- Kickflip captures now include a .35 flick-out, .40 roll=180°, .55 air tuck/roll≈311°, .87 catch lock, and landing contact/recovery. Catch IK error remains 0. Tre flip has 3/4 frames at raw yaw 93°/.30, 180°/.40, 272°/.50 and 360°/.68. Ollie has crouch, pop, midflight, descent, and landing captures. The static captures do not verify continuous motion or phone touch feel.
+- Open gates: R58 reviewer decisions; foot-to-deck visual separation/flick readability; push leg-chain shape and reach reserve; Ollie tail-pop readability; final rider/board/environment polish. HUD controls and mobile input remain unreviewed.
+
+## R60 (2026-10-23)
+- Replaced the spherical denim pelvis with a tapered, flatter ring-built seat and moved the trouser skin-weight transitions around the imported rig's measured knee/hip joints; retained the existing Humanoid skeleton, Animator, and trouser fit.
+- Blender FBX export and Unity CLI PlayMode capture completed. Every gameplay QA gate passed, including 4-wheel support, wheel/Rigidbody distance match, Push/coast, Ollie, Kickflip, Tre Flip, and ledge clearance. Same-build screenshots and logs are archived in `captures/r60/`.
+- The Ride frame still needs visual review at character scale; early crop comparison shows only a subtle silhouette change. Do not treat the gameplay PASS as visual approval.
+- Next: ask the design review to verify the pelvis silhouette against R59. If the silhouette still reads as a bump or has a waist/crotch seam, correct the actual mesh boundary/weights before moving on. The gameplay review's open Kickflip flick gate remains: show the front shoe beyond the toe-side deck edge and ahead of the nose, then verify Catch contact and Tre Flip yaw/flip readability with actual phase frames.

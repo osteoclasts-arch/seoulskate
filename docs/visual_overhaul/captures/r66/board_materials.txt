@@ -1,0 +1,19 @@
+R66 board material assignment summary
+Assigned renderer slots: 49
+Unknown material mappings: 0 (BuildBatch completed; unknown names throw)
+Hangang_Board_Print: 1 renderer slot(s)
+Seoul_Board_Bearing: 18 renderer slot(s)
+Seoul_Board_Bushing: 4 renderer slot(s)
+Seoul_Board_Grip: 1 renderer slot(s)
+Seoul_Board_Hardware: 20 renderer slot(s)
+Seoul_Board_Maple: 1 renderer slot(s)
+Seoul_Board_Wheel: 4 renderer slot(s)
+
+Unique runtime assignments:
+Hangang_Board_Print -> Board___Hangang_Sunset_Screen_Print_FFFFFFFF | Universal Render Pipeline/Lit | baseMap=seoul_deck_artwork | slots=1
+Seoul_Board_Bearing -> Board · Bearing Steel | Universal Render Pipeline/Lit | baseMap=None | slots=18
+Seoul_Board_Bushing -> Board___Black_Urethane_Bushings_1F2B2EFF | Universal Render Pipeline/Lit | baseMap=None | slots=4
+Seoul_Board_Grip -> Board · Charcoal Grip | Universal Render Pipeline/Lit | baseMap=None | slots=1
+Seoul_Board_Hardware -> Board · Brushed Steel | Universal Render Pipeline/Lit | baseMap=None | slots=20
+Seoul_Board_Maple -> Board · Natural Maple | Universal Render Pipeline/Lit | baseMap=None | slots=1
+Seoul_Board_Wheel -> Board · Ivory Urethane | Universal Render Pipeline/Lit | baseMap=None | slots=4

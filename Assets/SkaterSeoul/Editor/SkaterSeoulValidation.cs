@@ -22,9 +22,12 @@ namespace SkaterSeoul.Editor
 
         private static void Validate()
         {
+            Assert((int)SkateTrick.Ollie == 0 && (int)SkateTrick.Kickflip == 3 &&
+                (int)SkateTrick.TreFlip == 24, "legacy stable trick IDs");
             for (int t = 0; t < 3; t++)
             {
-                SkateTrick trick = (SkateTrick)t;
+                SkateTrick trick = SkaterSeoulRules.TrickAtMasterySlot(t);
+                Assert(SkaterSeoulRules.MasterySlot(trick) == t, "mastery slot mapping " + trick);
                 float previous = -1f;
                 for (int mastery = 0; mastery <= 100; mastery += 5)
                 {
@@ -66,7 +69,7 @@ namespace SkaterSeoul.Editor
                 float width = height * (aspect == 0 ? 16f / 9f : (aspect == 1 ? 19.5f / 9f : 20f / 9f));
                 for (int t = 0; t < 3; t++)
                 {
-                    SkateTrick expected = (SkateTrick)t;
+                    SkateTrick expected = SkaterSeoulRules.TrickAtMasterySlot(t);
                     float dx = expected == SkateTrick.Ollie ? 0f : (expected == SkateTrick.Kickflip ? -0.30f : 0.30f);
                     List<Vector2> path = new List<Vector2>(20);
                     for (int sample = 0; sample < 20; sample++)
@@ -90,6 +93,14 @@ namespace SkaterSeoul.Editor
             Assert(SkaterSeoulRules.Letters(5) == "SKATE", "end letters");
             Assert(SkaterSeoulRules.Letters(-1) == "_____", "negative letters clamp");
             Assert(SkaterSeoulRules.Letters(9) == "SKATE", "excess letters clamp");
+            Assert(SkaterSeoulRules.ResolveProbabilisticLanding(0.2f, 0.3f, out FailureType result) &&
+                result == FailureType.None, "probabilistic landing success");
+            Assert(!SkaterSeoulRules.ResolveProbabilisticLanding(0.65f, 0.3f, out result) &&
+                result == FailureType.MissedCatch, "single roll maps failed landing to missed catch");
+            Assert(!SkaterSeoulRules.ResolveProbabilisticLanding(0.9f, 0.3f, out result) &&
+                result == FailureType.LostBalance, "single roll maps failed landing to balance loss");
+            Assert(SkaterSeoulRules.ResolveProbabilisticLanding(0.99f, 1f, out result) &&
+                result == FailureType.None, "certain landing boundary");
             Debug.Log("SKATER SEOUL: static rules checks PASS. Play Mode and device testing are separate checks.");
         }
 

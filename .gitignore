@@ -1,2 +1,11 @@
 .DS_Store
 .backups/
+
+/UnityProject/Library/
+/UnityProject/Temp/
+/UnityProject/Obj/
+/UnityProject/Build/
+/UnityProject/Logs/
+/UnityProject/UserSettings/
+/UnityProject/MemoryCaptures/
+/UnityProject/Assets/**/Thumbs.db

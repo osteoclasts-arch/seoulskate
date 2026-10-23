@@ -1,9 +1,10 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 
 namespace SkaterSeoul
 {
-    public enum SkateTrick { Ollie = 0, Kickflip = 1, TreFlip = 2 }
+    public enum SkateTrick { Ollie = 0, Kickflip = 3, TreFlip = 24 }
     public enum FailureType { None, UnderRotation, MissedCatch, LostBalance, WrongTrick }
     public enum SkateStance { Regular, Goofy }
     public enum TravelDirection { ForwardX, BackwardX }
@@ -11,6 +12,28 @@ namespace SkaterSeoul
     /// <summary>Own rules and input model; no third-party game code.</summary>
     public static class SkaterSeoulRules
     {
+        public static int MasterySlot(SkateTrick trick)
+        {
+            switch (trick)
+            {
+                case SkateTrick.Ollie: return 0;
+                case SkateTrick.Kickflip: return 1;
+                case SkateTrick.TreFlip: return 2;
+                default: throw new ArgumentOutOfRangeException("trick");
+            }
+        }
+
+        public static SkateTrick TrickAtMasterySlot(int slot)
+        {
+            switch (slot)
+            {
+                case 0: return SkateTrick.Ollie;
+                case 1: return SkateTrick.Kickflip;
+                case 2: return SkateTrick.TreFlip;
+                default: throw new ArgumentOutOfRangeException("slot");
+            }
+        }
+
         public static string Name(SkateTrick trick)
         {
             switch (trick)
@@ -48,6 +71,21 @@ namespace SkaterSeoul
                       + 2.5f * (Mathf.Clamp01(gestureQuality) - 0.7f);
             float p = 1f / (1f + Mathf.Exp(-z));
             return Mathf.Clamp(p, 0.01f, 0.985f);
+        }
+
+        public static bool ResolveProbabilisticLanding(float roll, float chance, out FailureType failure)
+        {
+            roll = Mathf.Clamp01(roll);
+            chance = Mathf.Clamp01(chance);
+            if (roll < chance || chance >= 1f)
+            {
+                failure = FailureType.None;
+                return true;
+            }
+
+            float failureRoll = (roll - chance) / Mathf.Max(0.0001f, 1f - chance);
+            failure = failureRoll < 0.55f ? FailureType.MissedCatch : FailureType.LostBalance;
+            return false;
         }
 
         // V0 tutorial recognizer. NOT an assertion about Skate City's proprietary gesture mapping.

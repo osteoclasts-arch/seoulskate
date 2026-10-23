@@ -1,0 +1,35 @@
+PASS  four wheel probes see the plaza before a trick; gap=0.0080m
+PASS  runtime progress uses legacy v13 schema with all 39 stable trick slots
+PASS  board/04_board_3q material diagnostic was captured at 1280x720
+PASS  board/05_board_underside material diagnostic was captured at 1280x720
+PASS  10 second push and coast; distance=47.98m, release=6.52m/s, coast end=2.61m/s
+PASS  wheel arc matches Rigidbody delta at physics steps 16→521; wheelArc=47.93m, sameSampleBodyDelta=47.93m, liveBodyDelta=47.98m, mismatch=0.000m
+PASS  ground support gap <= 0.01m; probes=4, max gap=0.0080m
+PASS  OLLIE can begin from a settled support surface
+PASS  OLLIE resolves one attempt with one probability draw; attempts=0→1, draws=0→1
+PASS  OLLIE records once in legacy growth save; attempts=12→13
+PASS  OLLIE controlled valid landing
+PASS  OLLIE distinct bail: expected=LostBalance, actual=LostBalance, roll=0.9988, chance=0.9950
+PASS  OLLIE mechanical failure draw policy
+PASS  KICKFLIP can begin from a settled support surface
+PASS  Kickflip contact frame captured within 25 ms; elapsed=0.014s
+PASS  Kickflip pelvis drops 0.08–0.12 m at compression peak; measured=0.108m
+PASS  both Kickflip shoes stay within 0.02 m of their board anchors; max error=0.006m
+FAIL  both Kickflip knees gain 20–35 degrees of flex after contact; change=17/17 degrees
+PASS  Kickflip pelvis returns to within 0.025 m of Ride height by 260 ms; measured=0.012m
+PASS  Kickflip landing sequence records continuous 60 fps Unity frames; frames=20, knees at peak=70/83 degrees
+PASS  KICKFLIP resolves one attempt with one probability draw; attempts=2→3, draws=2→3
+PASS  KICKFLIP records once in legacy growth save; attempts=8→9
+PASS  KICKFLIP controlled valid landing
+PASS  KICKFLIP distinct bail: expected=MissedCatch, actual=MissedCatch, roll=0.9760, chance=0.9680
+PASS  KICKFLIP mechanical failure draw policy
+PASS  TRE FLIP can begin from a settled support surface
+PASS  TRE FLIP resolves one attempt with one probability draw; attempts=4→5, draws=4→5
+PASS  TRE FLIP records once in legacy growth save; attempts=8→9
+PASS  TRE FLIP controlled valid landing
+PASS  TRE FLIP distinct bail: expected=UnderRotation, actual=UnderRotation, roll=0.0100, chance=0.8510
+PASS  TRE FLIP mechanical failure draw policy
+PASS  OLLIE clears the collider-backed ledge and lands beyond it; endX=5.80, failure=None
+PASS  legacy S.K.A.T.E. match starts on the player setter phase
+PASS  successful player set advances to the legacy bot match phase
+PASS  1280x720 CLI camera captures were written; ride frame=735246 bytes

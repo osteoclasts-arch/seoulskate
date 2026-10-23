@@ -34,7 +34,7 @@ namespace SkaterSeoul
         private readonly List<Vector2> gestureSamples = new List<Vector2>(64);
         private SkateTrick currentTrick;
         private FailureType failure;
-        private bool intendedSuccess;
+        private float attemptChance;
         private bool attemptResolved = true;
         private bool defending;
         private bool botSetting;
@@ -80,7 +80,7 @@ namespace SkaterSeoul
             bool repairedMastery = false;
             for (int i = 0; i < 3; i++)
             {
-                SkateTrick t = (SkateTrick)i;
+                SkateTrick t = SkaterSeoulRules.TrickAtMasterySlot(i);
                 string key = "SS_Mastery_" + i;
                 float saved = PlayerPrefs.GetFloat(key, SkaterSeoulRules.InitialMastery(t));
                 mastery[i] = float.IsNaN(saved) || float.IsInfinity(saved) ?
@@ -397,16 +397,13 @@ namespace SkaterSeoul
             attemptResolved = false;
             trickStarted = Time.time;
             flightDuration = Mathf.Max(0.5f, 2f * jumpVelocity / Mathf.Abs(Physics.gravity.y));
-            float chance = defending && trick != requiredTrick ? 0f :
-                SkaterSeoulRules.Probability(trick, mastery[(int)trick], quality);
-            intendedSuccess = chance > 0f && UnityEngine.Random.value < chance;
-            failure = intendedSuccess ? FailureType.None :
-                (defending && trick != requiredTrick ? FailureType.WrongTrick :
-                (quality < 0.27f ? FailureType.UnderRotation :
-                (UnityEngine.Random.value < 0.38f ? FailureType.UnderRotation :
-                (UnityEngine.Random.value < 0.52f ? FailureType.MissedCatch : FailureType.LostBalance))));
+            bool wrongTrick = defending && trick != requiredTrick;
+            attemptChance = wrongTrick || quality < 0.27f ? 0f :
+                SkaterSeoulRules.Probability(trick, mastery[SkaterSeoulRules.MasterySlot(trick)], quality);
+            failure = wrongTrick ? FailureType.WrongTrick :
+                (quality < 0.27f ? FailureType.UnderRotation : FailureType.None);
             message = SkaterSeoulRules.Name(trick) + " | INPUT " + Mathf.RoundToInt(quality * 100) +
-                " | SUCCESS CHANCE " + Mathf.RoundToInt(chance * 100) + "%" +
+                " | SUCCESS CHANCE " + Mathf.RoundToInt(attemptChance * 100) + "%" +
                 (failure == FailureType.WrongTrick ? " | WRONG TRICK: DEFENSE FAILS" : "");
             state = MotionState.Airborne;
             Vector3 v = body.linearVelocity;
@@ -419,7 +416,7 @@ namespace SkaterSeoul
         {
             float t = Mathf.Clamp01((Time.time - trickStarted) / flightDuration);
             float spin = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / 0.76f));
-            if (!intendedSuccess && failure == FailureType.UnderRotation) spin *= 0.69f;
+            if (failure == FailureType.UnderRotation) spin *= 0.69f;
             float stanceSign = stance == SkateStance.Regular ? 1f : -1f;
             float flip = currentTrick == SkateTrick.Ollie ? 0f : 360f * spin * stanceSign;
             float shove = currentTrick == SkateTrick.TreFlip ? 360f * spin * stanceSign * TravelSign : 0f;
@@ -456,9 +453,11 @@ namespace SkaterSeoul
         {
             if (attemptResolved || state != MotionState.Airborne) return;
             attemptResolved = true;
-            bool landed = intendedSuccess;
+            bool landed = failure != FailureType.WrongTrick && failure != FailureType.UnderRotation;
+            if (landed)
+                landed = SkaterSeoulRules.ResolveProbabilisticLanding(UnityEngine.Random.value, attemptChance, out failure);
             float gain = 0.65f + (landed ? 1.35f : 0f);
-            int i = (int)currentTrick;
+            int i = SkaterSeoulRules.MasterySlot(currentTrick);
             mastery[i] = Mathf.Min(100f, mastery[i] + gain);
             PlayerPrefs.SetFloat("SS_Mastery_" + i, mastery[i]);
             PlayerPrefs.Save();
@@ -685,7 +684,7 @@ namespace SkaterSeoul
             string masteryText = "MASTERY";
             for (int i = 0; i < 3; i++)
             {
-                SkateTrick t = (SkateTrick)i;
+                SkateTrick t = SkaterSeoulRules.TrickAtMasterySlot(i);
                 int chance = Mathf.RoundToInt(100f * SkaterSeoulRules.Probability(t, mastery[i], displayQuality));
                 masteryText += "   " + (i == 2 ? "TRE" : SkaterSeoulRules.Name(t)) + " " + chance + "%";
             }
